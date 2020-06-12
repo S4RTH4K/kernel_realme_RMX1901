@@ -21,6 +21,33 @@ static const struct file_operations cmdline_proc_fops = {
 	.release	= single_release,
 };
 
+<<<<<<< HEAD
+=======
+static void patch_flag(char *cmd, const char *flag, const char *val)
+{
+	size_t flag_len, val_len;
+	char *start, *end;
+
+	start = strstr(cmd, flag);
+	if (!start)
+		return;
+
+	flag_len = strlen(flag);
+	val_len = strlen(val);
+	end = start + flag_len + strcspn(start + flag_len, " ");
+	memmove(start + flag_len + val_len, end, strlen(end) + 1);
+	memcpy(start + flag_len, val, val_len);
+}
+
+static void patch_safetynet_flags(char *cmd)
+{
+	patch_flag(cmd, "androidboot.flash.locked=", "1");
+	patch_flag(cmd, "androidboot.verifiedbootstate=", "green");
+	patch_flag(cmd, "androidboot.veritymode=", "enforcing");
+	patch_flag(cmd, "androidboot.vbmeta.device_state=", "locked");
+}
+
+>>>>>>> a59d4c66c5a9... proc: cmdline: Patch vbmeta device state flag for SafetyNet
 static int __init proc_cmdline_init(void)
 {
 	proc_create("cmdline", 0, NULL, &cmdline_proc_fops);
